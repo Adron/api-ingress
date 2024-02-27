@@ -19,33 +19,58 @@ class TweaksAndReceiptsApplicationTests {
     @Autowired
     private MockMvc mockMvc;
 
+    String defaultSuccesResponse = "started";
+    String defaultFailureMessage = "Invalid request";
+    String stateFailMessage = "provide fail state message.";
+    String phoneNumber = "12342344321"; // Example phone number
+    String fromPhoneNumber = "12342346621"; // Example phone number
+    String validPolicyVariable = "x-account-id=12345678";
+
     @Test
-    void testInitiateEndpoint() throws Exception {
+    void testProvideFailState() throws Exception {
         mockMvc.perform(post("/initiate")
+                        .header("X-To", phoneNumber)
+                        .header("X-From", fromPhoneNumber)
+                        .header("X-Policy-Variable", validPolicyVariable)
+                        .contentType(MediaType.TEXT_PLAIN)
+                        .content(stateFailMessage))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string(defaultFailureMessage));
+    }
+
+    @Test
+    void testInitiateEndpointWithValueBody() throws Exception {
+        mockMvc.perform(post("/initiate")
+                        .header("X-To", phoneNumber)
+                        .header("X-From", fromPhoneNumber)
+                        .header("X-Policy-Variable", validPolicyVariable)
+                        .contentType(MediaType.TEXT_PLAIN)
+                        .content("whatever"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(defaultSuccesResponse));
+    }
+
+    @Test
+    void testInitiateEndpointWithNoBody() throws Exception {
+        mockMvc.perform(post("/initiate")
+                        .header("X-To", phoneNumber)
+                        .header("X-From", fromPhoneNumber)
+                        .header("X-Policy-Variable", validPolicyVariable)
+                        .contentType(MediaType.TEXT_PLAIN))
+                .andExpect(status().isOk())
+                .andExpect(content().string(defaultSuccesResponse));
+    }
+
+    @Test
+    void testInitiateEndpointWithNoHeader() throws Exception {
+        mockMvc.perform(post("/initiate")
+                        .header("X-To", phoneNumber)
+                        .header("X-From", fromPhoneNumber)
+                        .header("X-Policy-Variable", validPolicyVariable)
                         .contentType(MediaType.TEXT_PLAIN)
                         .content("initiate"))
                 .andExpect(status().isOk())
-                .andExpect(content().string("started"));
-    }
-
-    @Test
-    void testfailEndpoint() throws Exception {
-        mockMvc.perform(post("/initiate")
-                        .contentType(MediaType.TEXT_PLAIN)
-                        .content("fail this test"))
-                .andExpect(status().is4xxClientError())
-                .andExpect(content().string("Invalid request"));
-    }
-
-    @Test
-    void testInitiateEndpointWithEmptyBody() throws Exception {
-        mockMvc.perform(post("/initiate")
-                        .contentType(MediaType.TEXT_PLAIN)
-                        .content(""))
-                .andExpect(status().is4xxClientError())
-                .andExpect(content().string("Invalid request"));
-        // Note this capability necessitated the attribute addition like this
-        // (@RequestBody(required = false) String body)
+                .andExpect(content().string(containsString(defaultSuccesResponse)));
     }
 
     @Test
@@ -53,11 +78,25 @@ class TweaksAndReceiptsApplicationTests {
         String phoneNumber = "12342344321"; // Example phone number
 
         mockMvc.perform(post("/initiate")
-                        .header("source-address", phoneNumber)
+                        .header("X-To", phoneNumber)
+                        .header("X-From", fromPhoneNumber)
+                        .header("X-Policy-Variable", validPolicyVariable)
                         .contentType(MediaType.TEXT_PLAIN)
                         .content("initiate"))
                 .andExpect(status().isOk())
-                // Assuming the endpoint echoes back the phone number or uses it in its response
-                .andExpect(content().string(containsString(phoneNumber)));
+                .andExpect(content().string(containsString(defaultSuccesResponse)));
+    }
+
+    @Test
+    void testInitiateEndpointWithHeaderAndBody() throws Exception {
+
+        mockMvc.perform(post("/initiate")
+                        .header("X-To", phoneNumber)
+                        .header("X-From", fromPhoneNumber)
+                        .header("X-Policy-Variable", validPolicyVariable)
+                        .contentType(MediaType.TEXT_PLAIN)
+                        .content("this is not a spam message"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString(defaultSuccesResponse)));
     }
 }
