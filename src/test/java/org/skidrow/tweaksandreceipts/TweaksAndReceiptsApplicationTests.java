@@ -26,9 +26,12 @@ class TweaksAndReceiptsApplicationTests {
     String fromPhoneNumber = "12342346621"; // Example phone number
     String validPolicyVariable = "x-account-id=12345678";
 
+    String urlTemplate = "/initiate";
+
     @Test
     void testProvideFailState() throws Exception {
-        mockMvc.perform(post("/initiate")
+
+        mockMvc.perform(post(urlTemplate)
                         .header("X-To", phoneNumber)
                         .header("X-From", fromPhoneNumber)
                         .header("X-Policy-Variable", validPolicyVariable)
@@ -40,7 +43,7 @@ class TweaksAndReceiptsApplicationTests {
 
     @Test
     void testInitiateEndpointWithValueBody() throws Exception {
-        mockMvc.perform(post("/initiate")
+        mockMvc.perform(post(urlTemplate)
                         .header("X-To", phoneNumber)
                         .header("X-From", fromPhoneNumber)
                         .header("X-Policy-Variable", validPolicyVariable)
@@ -52,7 +55,7 @@ class TweaksAndReceiptsApplicationTests {
 
     @Test
     void testInitiateEndpointWithNoBody() throws Exception {
-        mockMvc.perform(post("/initiate")
+        mockMvc.perform(post(urlTemplate)
                         .header("X-To", phoneNumber)
                         .header("X-From", fromPhoneNumber)
                         .header("X-Policy-Variable", validPolicyVariable)
@@ -63,7 +66,7 @@ class TweaksAndReceiptsApplicationTests {
 
     @Test
     void testInitiateEndpointWithNoHeader() throws Exception {
-        mockMvc.perform(post("/initiate")
+        mockMvc.perform(post(urlTemplate)
                         .header("X-To", phoneNumber)
                         .header("X-From", fromPhoneNumber)
                         .header("X-Policy-Variable", validPolicyVariable)
@@ -77,7 +80,7 @@ class TweaksAndReceiptsApplicationTests {
     void testInitiateEndpointWithHeader() throws Exception {
         String phoneNumber = "12342344321"; // Example phone number
 
-        mockMvc.perform(post("/initiate")
+        mockMvc.perform(post(urlTemplate)
                         .header("X-To", phoneNumber)
                         .header("X-From", fromPhoneNumber)
                         .header("X-Policy-Variable", validPolicyVariable)
@@ -90,7 +93,7 @@ class TweaksAndReceiptsApplicationTests {
     @Test
     void testInitiateEndpointWithHeaderAndBody() throws Exception {
 
-        mockMvc.perform(post("/initiate")
+        mockMvc.perform(post(urlTemplate)
                         .header("X-To", phoneNumber)
                         .header("X-From", fromPhoneNumber)
                         .header("X-Policy-Variable", validPolicyVariable)
