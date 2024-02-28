@@ -26,7 +26,7 @@ class TweaksAndReceiptsApplicationTests {
     String fromPhoneNumber = "12342346621"; // Example phone number
     String validPolicyVariable = "x-account-id=12345678";
 
-    String urlTemplate = "/initiate";
+    String urlTemplate = "/ingest";
 
     @Test
     void testProvideFailState() throws Exception {

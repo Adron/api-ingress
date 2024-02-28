@@ -13,7 +13,7 @@ public class ApiController {
     String defaultFailureMessage = "Invalid request";
     String provideFailState = "provide fail state message.";
 
-    @PostMapping("/initiate")
+    @PostMapping("/ingest")
     public ResponseEntity<String> initiateProcess(@RequestBody(required = false) String body,
                                                   @RequestHeader(value = "X-From", required = true) String fromPhoneNumber,
                                                   @RequestHeader(value = "X-To", required = true) String toPhoneNumber,
